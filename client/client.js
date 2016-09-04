@@ -191,8 +191,8 @@ function timedlist_down() {
 
 function timedlist_playback(lid) {
 	tlist_runningit = lid;
-	socket.emit("hcs", command_serialize("VOLT", [timed_list[lid].volt]));
-	socket.emit("hcs", command_serialize("CURR", [timed_list[lid].curr]));
+	socket.emit("hcs", "VOLTAGE "+timed_list[lid].volt);
+	socket.emit("hcs", "CURRENT "+timed_list[lid].curr);
 	tlist_update();
 
 	// Scroll to active element
