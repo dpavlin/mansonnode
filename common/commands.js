@@ -35,6 +35,7 @@ function command_set_decplaces(decplaces) {
 	command		= The command with parameters
 */
 function command_deserialize(command) {
+	console.log('# command_deserialize', command);
 	var hcscommand = command.substring(0, 4);
 	var desc = command_descriptors[hcscommand];
 	var values = Array();

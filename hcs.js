@@ -13,6 +13,7 @@ exports.open = function(port, baud, callback) {
 
 	// Answers from Manson HCS, multiple lines
 	var HCS_answer = Array();
+	var HCS_obj = Object();
 
 	// Manson HCS is ready to accept new commands (has answered with "OK")
 	var HCS_ready = true;
@@ -21,7 +22,8 @@ exports.open = function(port, baud, callback) {
 	var HCS_queue = Array();
 
 	// Open the serial port
-	var serport = new serial.SerialPort(port, {
+	var serport = new serial(port, {
+		autoOpen: false,
 		baudrate: baud,
 		parser: serial.parsers.readline("\r")
 	});
@@ -39,9 +41,18 @@ exports.open = function(port, baud, callback) {
 
 		// Collect data from the HCS and execute the callback if the answer was "OK"
 		serport.on("data", function(data) {
+			console.log("<< %j", data);
+			data = data.replace("\n","");
+
+			v = data.split(/: /);
+			HCS_obj[v[0]] = v[1];
+			//console.log("# HCS_obj = %j", HCS_obj);
+
+
 			HCS_answer.push(data);
-			if (data == "OK") {
-				if (HCS_callback) HCS_callback(HCS_answer);
+			if (data == "OK" || data == "DONE") {
+				//console.log("# HCS_answer = %j", HCS_answer, HCS_callback);
+				if (HCS_callback) HCS_callback(HCS_obj);
 				HCS_answer = [];
 				HCS_ready = true;
 			}
@@ -56,6 +67,7 @@ exports.open = function(port, baud, callback) {
 			else {
 				HCS_ready = false;
 				serport.write(cmd + "\r");
+				console.log(">> %j",cmd);
 				HCS_callback = callback;
 			}
 		}

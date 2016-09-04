@@ -1,7 +1,8 @@
 // ########## Configuration ##########
 var TCP_PORT = 4444
 var SERIAL_PORT = process.argv[2];
-var SERIAL_BAUD = 9600;
+SERIAL_PORT = '/dev/serial/by-path/platform-3f980000.usb-usb-0\:1.5.1\:1.0-port0';
+var SERIAL_BAUD = 38400;
 var DECIMAL_PLACES = 1;
 var UPDATE_TIME = 200; // in ms
 // ###################################
@@ -33,6 +34,7 @@ var client_ui_state = {};
 // Initialize HCS and get some factory-setting properties (max. voltage / current)
 var HCS_properties = Object();
 HCS.open(SERIAL_PORT, SERIAL_BAUD, function() {
+/*
 	var noanswer_timeout = setTimeout(function() {
 		console.log("HCS didn't answer. Make sure it is powered on.");
 		console.log("Also, check if you selected the correct serial port.");
@@ -40,9 +42,10 @@ HCS.open(SERIAL_PORT, SERIAL_BAUD, function() {
 		process.exit(1);
 	}, 1000);
 
-	HCS.command("GMAX", function() {
-		HCS.command("GMAX", function(answer) {
-			clearTimeout(noanswer_timeout);
+	HCS.command("ECHO 0", function() {
+		clearTimeout(noanswer_timeout);
+		HCS.command("CONFIG", function(answer) {
+			console.log("# answer = %j", answer);
 			HCS_properties.maxvolt = parseInt(answer[0].substring(0, 3)) / 10;
 			HCS_properties.maxcurr = parseInt(answer[0].substring(3, 6)) /
 				Math.pow(10, DECIMAL_PLACES);
@@ -53,27 +56,41 @@ HCS.open(SERIAL_PORT, SERIAL_BAUD, function() {
 			console.log("------------------------");
 		});
 	});
+*/
+			console.log("# HCS_properties = %j", HCS_properties);
+			HCS_properties.maxvolt = 36.0;
+			HCS_properties.maxcurr = 3.0;
+			console.log("# HCS_properties = %j", HCS_properties);
 });
 
 // Update HCS properties regularly
 setInterval(function() {
 	if (!HCS.ready) return;
-	HCS.command("GETD", function(answer) {
-		HCS_properties.actual_volt = parseInt(answer[0].substring(0, 4)) / 100;
-		HCS_properties.actual_curr = parseInt(answer[0].substring(4, 8)) / 100;
-		HCS_properties.cvcc = answer[0].substring(8, 9) == "0" ? "cv" : "cc";
+	HCS.command("STATUS", function(answer) {
+		//console.log("# STATUS answer = %j", answer);
+
+		HCS_properties.maxvolt =	parseFloat(answer['VIN']);
+		HCS_properties.actual_volt =	parseFloat(answer['VOUT']);
+		HCS_properties.actual_curr =	parseFloat(answer['COUT']);
+		HCS_properties.cvcc = answer["CONSTANT"] == "VOLTAGE" ? "cv" : "cc";
+		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
+
+		//console.log("# HCS_properties = %j", HCS_properties);
 	});
 
-	HCS.command("GETS", function(answer) {
-		HCS_properties.volt = parseInt(answer[0].substring(0, 3)) / 10;
-		HCS_properties.curr = parseInt(answer[0].substring(3, 6)) / Math.pow(10, DECIMAL_PLACES);
+	HCS.command("CONFIG", function(answer) {
+		HCS_properties.volt = parseFloat(answer['VSET']);
+		HCS_properties.curr = parseFloat(answer['CSET']);
+		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
+		console.log("# HCS_properties = %j", HCS_properties);
 	});
 
+/*
 	// "GOUT" command reads state of SOUT, even though it is not documented
 	HCS.command("GOUT", function(answer) {
 		HCS_properties.enable_out = (answer[0].substring(0, 1) == "0");
 	});
-
+*/
 	// Inform clients that properties have been updated
 	io.emit("propchange");
 }, UPDATE_TIME);
