@@ -481,8 +481,9 @@ $(function() {
 	// Set output state
 	$("#toggle_output").click(function() {
 		// Send toggle-state request to server
-		var newstate = $("#toggle_output").attr("status") == "enable" ? 1 : 0;
-		socket.emit("hcs", command_serialize("SOUT", [newstate]));
+		var newstate = $("#toggle_output").attr("status") == "enable" ? 0 : 1;
+		//socket.emit("hcs", command_serialize("SOUT", [newstate]));
+		socket.emit("hcs", "OUTPUT " + newstate);
 	});
 
 	// Voltage slider
@@ -500,8 +501,8 @@ $(function() {
 		var voltage = parseFloat($("#voltage_control").val());
 		var current = parseFloat($("#current_control").val());
 
-		socket.emit("hcs", command_serialize("VOLT", [voltage]));
-		socket.emit("hcs", command_serialize("CURR", [current]));
+		socket.emit("hcs", "VOLTAGE "+voltage);
+		socket.emit("hcs", "CURRENT "+current);
 	});
 
 	setup_ui();

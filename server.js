@@ -218,6 +218,7 @@ register_callback("hcs", function(msg, fn) {
 		var c = command.deserialize(msg);
 		var property_change = true;
 
+/*
 		if (c.command == "SOUT")
 			HCS_properties.enable_out = (c.parameters[0] == "0");
 		else if (c.command == "VOLT")
@@ -225,6 +226,7 @@ register_callback("hcs", function(msg, fn) {
 		else if (c.command == "CURR")
 			HCS_properties.curr = c.parameters[0];
 		else
+*/
 			property_change = false;
 
 		if (property_change) io.emit("propchange");
