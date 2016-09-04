@@ -71,7 +71,8 @@ setInterval(function() {
 
 		HCS_properties.maxvolt =	parseFloat(answer['VIN']);
 		HCS_properties.actual_volt =	parseFloat(answer['VOUT']);
-		HCS_properties.actual_curr =	parseFloat(answer['COUT']/100);
+		HCS_properties.actual_curr = // XXX B3603 reports mA as integer or A as floats
+			answer['COUT'].match(/\./) ? parseFloat(answer['COUT']) : answer['COUT'] / 1000;
 		HCS_properties.cvcc = answer["CONSTANT"] == "VOLTAGE" ? "cv" : "cc";
 		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
 
