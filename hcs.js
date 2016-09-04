@@ -41,7 +41,7 @@ exports.open = function(port, baud, callback) {
 
 		// Collect data from the HCS and execute the callback if the answer was "OK"
 		serport.on("data", function(data) {
-			console.log("<< %j", data);
+			//console.log("<< %j", data);
 			data = data.replace("\n","");
 
 			v = data.split(/: /);
@@ -52,6 +52,7 @@ exports.open = function(port, baud, callback) {
 			HCS_answer.push(data);
 			if (data == "OK" || data == "DONE") {
 				//console.log("# HCS_answer = %j", HCS_answer, HCS_callback);
+				HCS_obj['_lines'] = HCS_answer;
 				if (HCS_callback) HCS_callback(HCS_obj);
 				HCS_answer = [];
 				HCS_ready = true;
@@ -66,7 +67,9 @@ exports.open = function(port, baud, callback) {
 				});
 			else {
 				HCS_ready = false;
-				serport.write(cmd + "\r");
+				cmd += "\r";
+				cmd = cmd.replace("\r\r","\r");
+				serport.write(cmd);
 				console.log(">> %j",cmd);
 				HCS_callback = callback;
 			}

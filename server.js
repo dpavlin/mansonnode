@@ -71,7 +71,7 @@ setInterval(function() {
 
 		HCS_properties.maxvolt =	parseFloat(answer['VIN']);
 		HCS_properties.actual_volt =	parseFloat(answer['VOUT']);
-		HCS_properties.actual_curr =	parseFloat(answer['COUT']);
+		HCS_properties.actual_curr =	parseFloat(answer['COUT']/100);
 		HCS_properties.cvcc = answer["CONSTANT"] == "VOLTAGE" ? "cv" : "cc";
 		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
 
@@ -82,7 +82,7 @@ setInterval(function() {
 		HCS_properties.volt = parseFloat(answer['VSET']);
 		HCS_properties.curr = parseFloat(answer['CSET']);
 		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
-		console.log("# HCS_properties = %j", HCS_properties);
+		//console.log("# HCS_properties = %j", HCS_properties);
 	});
 
 /*

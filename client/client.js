@@ -238,6 +238,7 @@ function exim_imptlist () {
 			var reader = new FileReader();
 
 			reader.onload = function(event) {
+				console.log('upload', event.target.result);
 				timed_list = $.parseJSON(event.target.result);
 				tlist_update();
 			};
@@ -436,7 +437,8 @@ socket.on("hcs", function(cmd) {
 });
 
 socket.on("hcs_answer", function(answer) {
-	answer.forEach(function(a) {
+	console.log(answer);
+	answer._lines.forEach(function(a) {
 		$("#serial_log").append($("<li>").text(a));
 		$("#serial_log").scrollTop($("#serial_log").prop("scrollHeight"));
 	});
