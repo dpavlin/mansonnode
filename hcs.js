@@ -70,7 +70,7 @@ exports.open = function(port, baud, callback) {
 				cmd += "\r";
 				cmd = cmd.replace("\r\r","\r");
 				serport.write(cmd);
-				console.log(">> %j",cmd);
+				//console.log(">> %j",cmd);
 				HCS_callback = callback;
 			}
 		}
