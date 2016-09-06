@@ -33,42 +33,6 @@ function gridster_init() {
 	});
 }
 
-// Generates a 7-segment display with default settings
-function SegmentDisplayFactory(canvas_id, type) {
-	var disp = new SegmentDisplay(canvas_id);
-	disp.displayAngle = 6;
-	disp.digitHeight = 20;
-	disp.digitWidth = 14;
-	disp.digitDistance = 2.5;
-	disp.segmentWidth = 2;
-	disp.segmentDistance = 0.3;
-	disp.segmentCount = 7;
-	disp.cornerType = 3;
-	disp.colorOn = "#24dd22";
-	disp.colorOff = "#002000";
-	disp.draw();
-
-	if (type == "actual_voltage" || type == "actual_current") {
-		disp.pattern = "##.##";
-		disp.setValue("88.88");
-	} else if (type == "counter") {
-		disp.pattern = "###.##";
-		disp.setValue("888.88");
-	} else if (type == "current") {
-		if (HCS_decplaces == 2) {
-			disp.pattern = "#.##";
-			disp.setValue("8.88");
-		} else {
-			disp.pattern = "##.#";
-			disp.setValue("88.8");
-		}
-	} else if (type == "voltage") {
-		disp.pattern = "##.#";
-		disp.setValue("88.8");
-	}
-
-	return disp;
-}
 
 function downloadData(filename, data) {
     var dl = $("<a>").attr("href", "data:text/plain;charset=utf-8," + encodeURIComponent(data));
@@ -294,17 +258,20 @@ function setup_ui() {
 	});
 
 	/* 7-segment displays */
+
+
+
 	// Setting values
-	var volt_disp = SegmentDisplayFactory("volt_disp", "voltage");
-	var curr_disp = SegmentDisplayFactory("curr_disp", "current");
+	var volt_disp = $("#volt_disp");
+	var curr_disp = $("#curr_disp");
 
 	// Actual values
-	var volt_actual = SegmentDisplayFactory("volt_actual", "actual_voltage");
-	var curr_actual = SegmentDisplayFactory("curr_actual", "actual_current");
+	var volt_actual = $("#volt_actual");
+	var curr_actual = $("#curr_actual");
 
 	// Counter values (charge, energy)
-	var charge_disp = SegmentDisplayFactory("charge_disp", "counter");
-	var energy_disp = SegmentDisplayFactory("energy_disp", "counter");
+	var charge_disp = $("#charge_disp");
+	var energy_disp = $("#energy_disp");
 	var counter_charge = 0 // (in As)
 	var lasttime_current = Date.now()
 
@@ -329,7 +296,7 @@ function setup_ui() {
 				// Convert from Ws to Wh (/ 3600)
 				var ener_str = (this.totalEnergy / 3600).toFixed(2).toString();
 				while (ener_str.length < 6) ener_str = " " + ener_str;
-				energy_disp.setValue(ener_str);
+				energy_disp.text(ener_str);
 
 			}
 		},
@@ -347,19 +314,19 @@ function setup_ui() {
 		server_prop("get_volt", function(volt) {
 			var volt_str = volt.toFixed(1).toString();
 			while (volt_str.length < 4) volt_str = " " + volt_str;
-			volt_disp.setValue(volt_str);
+			volt_disp.text(volt_str);
 		});
 
 		server_prop("get_curr", function(curr) {
 			var curr_str = curr.toFixed(HCS_decplaces).toString();
 			while (curr_str.length < 4) curr_str = " " + curr_str;
-			curr_disp.setValue(curr_str);
+			curr_disp.text(curr_str);
 		});
 
 		server_prop("get_actual_volt", function(volt) {
 			var volt_str = volt.toFixed(2).toString();
 			while (volt_str.length < 5) volt_str = " " + volt_str;
-			volt_actual.setValue(volt_str);
+			volt_actual.text(volt_str);
 			voltage_data.push([(Date.now() - date_begin) / 1000, volt]);
 
 			// Reset flot voltage graph
@@ -397,7 +364,7 @@ function setup_ui() {
 			// Convert from As to Ah via / 3600, from Ah to mAh (* 1000)
 			var charge_str = (counter_charge / 3600 * 1000).toFixed(2).toString();
 			while (charge_str.length < 6) charge_str = " " + charge_str;
-			charge_disp.setValue(charge_str);
+			charge_disp.text(charge_str);
 
 			energy_counter.setCurrent(curr);
 		});

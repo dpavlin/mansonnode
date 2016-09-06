@@ -471,3 +471,11 @@ body {
 	border:1px solid #048;
 	cursor:pointer;
 }
+
+.segment7 {
+	font-family: 'Segment7Standard'; 
+	font-weight: normal; 
+	font-style: italic;
+	color: #0f0;
+	font-size: 250%;
+}

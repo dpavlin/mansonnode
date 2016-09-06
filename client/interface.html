@@ -13,6 +13,8 @@
 <script src="/commands.js"></script>
 <script src="/client.js"></script>
 
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
+
 <link rel="stylesheet" type="text/css" href="jquery.gridster.min.css">
 <link rel="stylesheet" type="text/css" href="styles.css">
 
@@ -54,8 +56,8 @@
 	<li data-row="4" data-col="5" data-sizex="4" data-sizey="3" class="gli">
 	<div id="display_container">
 		<div class="dispheading">Settings</div>
-		<canvas id="volt_disp" width="100" height="50"></canvas>V<br/>
-		<canvas id="curr_disp" width="100" height="50"></canvas>A
+		<span class="segment7" id="volt_disp">????</span>V<br/>
+		<span class="segment7" id="curr_disp">????</span>A
 	</div>
 	</li>
 
@@ -63,8 +65,8 @@
 	<li data-row="1" data-col="5" data-sizex="4" data-sizey="3" class="gli">
 	<div id="actual_container">
 		<div class="dispheading">Actual values</div>
-		<canvas id="volt_actual" width="100" height="50"></canvas>V<br/>
-		<canvas id="curr_actual" width="100" height="50"></canvas>A
+			<span class="segment7" id="volt_actual">????</span>V<br/>
+			<span class="segment7" id="curr_actual">????</span>A<br/>
 		<!-- CV / CC Display -->
 		<div id="cvcc_disp">
 			N/A
@@ -76,8 +78,8 @@
 	<li data-row="7" data-col="5" data-sizex="4" data-sizey="3" class="gli">
 	<div id="counter_container">
 		<div class="dispheading">Counter</div>
-		<canvas id="charge_disp" width="130" height="50"></canvas>mAh<br/>
-		<canvas id="energy_disp" width="130" height="50"></canvas>Wh
+		<span id="charge_disp" class="segment7">????</span>mAh<br/>
+		<span id="energy_disp" class="segment7">????</span>Wh
 	</div>
 	</li>
 
