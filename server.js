@@ -3,7 +3,7 @@ var TCP_PORT = 4444
 var SERIAL_PORT = process.argv[2];
 SERIAL_PORT = '/dev/serial/by-path/platform-3f980000.usb-usb-0\:1.5.1\:1.0-port0';
 var SERIAL_BAUD = 38400;
-var DECIMAL_PLACES = 1;
+var DECIMAL_PLACES = 1; // FIXME nothing other than 1 doesn't work with toFixed(1).toString
 var UPDATE_TIME = 200; // in ms
 // ###################################
 
