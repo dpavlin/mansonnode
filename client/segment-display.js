@@ -37,11 +37,15 @@ function SegmentDisplay(displayId) {
   this.cornerType      = SegmentDisplay.RoundedCorner;
   this.colorOn         = 'rgb(233, 93, 15)';
   this.colorOff        = 'rgb(75, 30, 5)';
+  this.last_value = '';
 };
 
 SegmentDisplay.prototype.setValue = function(value) {
+ if ( value != this.last_value ) {
   this.value = value;
   this.draw();
+  this.last_value = value;
+ }
 };
 
 SegmentDisplay.prototype.draw = function() {
