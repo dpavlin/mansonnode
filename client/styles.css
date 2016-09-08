@@ -142,6 +142,7 @@ body {
 	outline:none;
 }
 
+#controls_update:focus,
 #controls_update:hover {
 	transition:background-color 0.1s;
 	background-color:#444;

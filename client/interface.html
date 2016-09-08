@@ -3,7 +3,7 @@
 <html>
 
 <head>
-<title>Manson HCS Controller</title>
+<title>B3603</title>
 <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
 
 <script src="/flot/jquery.min.js"></script>
@@ -11,7 +11,9 @@
 <script src="/jquery.gridster.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/flot/jquery.flot.js"></script>
+<!--
 <script src="/segment-display.js"></script>
+-->
 <script src="/commands.js"></script>
 <script src="/client.js"></script>
 
@@ -46,20 +48,9 @@
 	</div>
 	</li>
 
-
-	<!-- Serial terminal -->
-	<li data-row="6" data-col="1" data-sizex="4" data-sizey="5" class="gli">
-	<div id="serlog_term">
-		<ul id="serial_log"></ul>
-		<input id="serial_msg" />
-		<button id="putserial">OK</button>
-	</div>
-	</li>
-
 	<!-- Voltage / Current controls -->
-	<li data-row="4" data-col="1" data-sizex="4" data-sizey="5" class="gli">
+	<li data-row="4" data-col="1" data-sizex="4" data-sizey="4" class="gli">
 	<div id="controls">
-		<input type="button" id="controls_update" value="Set new" tabindex=3>
 
 		<div class="control_container">
 			<div class="control_range_container">
@@ -80,9 +71,21 @@
 			<div class="segment7 value">Err</div>
 		</div>
 
+		<input type="button" id="controls_update" value="Set new" tabindex=3>
+
 	</div>
 	</li>
 
+
+
+	<!-- Serial terminal -->
+	<li data-row="8" data-col="1" data-sizex="4" data-sizey="5" class="gli">
+	<div id="serlog_term">
+		<ul id="serial_log"></ul>
+		<input id="serial_msg" />
+		<button id="putserial">OK</button>
+	</div>
+	</li>
 
 
 	<!-- Voltage / current / power graph -->

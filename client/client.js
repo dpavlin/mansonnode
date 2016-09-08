@@ -328,11 +328,15 @@ function setup_ui() {
 		};
 
 		server_prop("get_volt", function(volt) {
-			update_if_changed(volt_set, volt);
+			if ( update_if_changed(volt_set, volt) ) {
+				setControlVoltage(volt);
+			}
 		});
 
 		server_prop("get_curr", function(curr) {
-			update_if_changed(curr_set, curr);
+			if ( update_if_changed(curr_set, curr) ) {
+				setControlCurrent(curr);
+			}
 		});
 
 		server_prop("get_actual_volt", function(volt) {
@@ -387,7 +391,7 @@ function setup_ui() {
 
 		server_prop("get_cvcc", function(cvcc) {
 			$("#cvcc_disp").attr("status", cvcc);
-			$("#cvcc_disp").html(cvcc == "cv" ? "C.V." : "C.C.");
+			$("#cvcc_disp").html(cvcc == "cv" ? "CV" : "CC");
 		});
 	}
 
@@ -472,12 +476,12 @@ $(document).ready(function() {
 	});
 
 	// Voltage slider
-	$("#voltage_control").val(5).on("input", function() {
+	$("#voltage_control").on("input", function() {
 		setControlVoltage(parseFloat($("#voltage_control").val()));
 	});
 
 	// Current slider
-	$("#current_control").val(1).on("input", function() {
+	$("#current_control").on("input", function() {
 		setControlCurrent(parseFloat($("#current_control").val()));
 	});
 
