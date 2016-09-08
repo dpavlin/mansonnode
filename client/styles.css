@@ -1,6 +1,7 @@
 body {
 	background-color:#000;
 	overflow-y:hidden;
+	font-family:Sans;
 }
 
 #headline {
@@ -114,12 +115,12 @@ body {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	z-index:0;
-	font-size:18px;
+	z-index:-1;
+	font-size:50px;
 	position:absolute;
-	top:calc(50% - 18px);
-	left:calc(50% - 18px);
-	color:red;
+	top:calc(25px);
+	left:calc(50% - 50px);
+	color:#f44;
 }
 
 #controls {
@@ -408,12 +409,14 @@ body {
 	user-select: none;
 	cursor:default;
 	color:#fff;
+	border:2px solid white;
+/*
 	padding:10px;
 	margin:8px;
 	font-size:12px;
-	border:2px solid white;
 	display:inline-block;
 	border-radius:3px;
+*/
 }
 
 #cvcc_disp[status="cv"] {

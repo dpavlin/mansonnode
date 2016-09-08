@@ -23,30 +23,22 @@
 </head>
 <body>
 
+<!--
 <div id="headline">Manson HCS Control Panel</div>
+-->
 
 <!-- Grid layout -->
 <div class="gridster"><ul id="maingrid">
-	<!-- Voltage / Current controls -->
-	<li data-row="1" data-col="1" data-sizex="4" data-sizey="5" class="gli">
-	<div id="controls">
-		<div class="control_container">
-			<div class="control_range_container">
-				<input id="voltage_control" class="controlslider" type="range" value="0"/>
-			</div><br />
-			Voltage
-			<div class="value">0.0V</div>
-		</div>
 
-		<div class="control_container">
-			<div class="control_range_container">
-				<input id="current_control" class="controlslider" type="range" value="0"/>
-			</div><br />
-			Current
-			<div class="value">0.0A</div>
+	<!-- Actual voltage / current display -->
+	<li data-row="1" data-col="1" data-sizex="4" data-sizey="3" class="gli">
+	<div id="actual_container">
+		<div class="dispheading">Set / Actual
+			<!-- CV / CC Display -->
+			<span id="cvcc_disp">N/A</span>
 		</div>
-		<input type="button" id="controls_update" value="OK">
-
+			<span class="segment7" id="volt_set">?.??</span>V<span class="segment7" id="volt_actual">?.??</span>
+			<span class="segment7" id="curr_set">?.??</span>A<span class="segment7" id="curr_actual">?.??</span>
 		<!-- Output on / off toggle -->
 		<div id="toggle_output_container">
 			<input type="button" id="toggle_output" status="enable" value = "Output" />
@@ -54,50 +46,60 @@
 	</div>
 	</li>
 
-	<!-- Voltage / current setting display -->
-	<li data-row="4" data-col="5" data-sizex="4" data-sizey="3" class="gli">
-	<div id="display_container">
-		<div class="dispheading">Settings</div>
-		<span class="segment7" id="volt_disp">????</span>V<br/>
-		<span class="segment7" id="curr_disp">????</span>A
+
+	<!-- Serial terminal -->
+	<li data-row="6" data-col="1" data-sizex="4" data-sizey="5" class="gli">
+	<div id="serlog_term">
+		<ul id="serial_log"></ul>
+		<input id="serial_msg" />
+		<button id="putserial">OK</button>
 	</div>
 	</li>
 
-	<!-- Actual voltage / current display -->
-	<li data-row="1" data-col="5" data-sizex="4" data-sizey="3" class="gli">
-	<div id="actual_container">
-		<div class="dispheading">Actual values</div>
-			<span class="segment7" id="volt_actual">????</span>V<br/>
-			<span class="segment7" id="curr_actual">????</span>A<br/>
-		<!-- CV / CC Display -->
-		<div id="cvcc_disp">
-			N/A
+	<!-- Voltage / Current controls -->
+	<li data-row="4" data-col="1" data-sizex="4" data-sizey="5" class="gli">
+	<div id="controls">
+		<input type="button" id="controls_update" value="Set new" tabindex=3>
+
+		<div class="control_container">
+			<div class="control_range_container">
+				<input id="voltage_control" class="controlslider" type="range" value="0" tabindex=1/>
+			</div>
+			<br />
+			Voltage
+			<div class="segment7 value">?.?</div>
+
 		</div>
+
+		<div class="control_container">
+			<div class="control_range_container">
+				<input id="current_control" class="controlslider" type="range" value="0" tabindex=2/>
+			</div>
+			<br />
+			Current
+			<div class="segment7 value">Err</div>
+		</div>
+
 	</div>
 	</li>
 
-	<!-- Current / power counter -->
-	<li data-row="7" data-col="5" data-sizex="4" data-sizey="3" class="gli">
-	<div id="counter_container">
-		<div class="dispheading">Counter</div>
-		<span id="charge_disp" class="segment7">????</span>mAh<br/>
-		<span id="energy_disp" class="segment7">????</span>Wh
-	</div>
-	</li>
+
 
 	<!-- Voltage / current / power graph -->
-	<li data-row="1" data-col="9" data-sizex="6" data-sizey="6" class="gli">
+	<li data-row="1" data-col="4" data-sizex="6" data-sizey="6" class="gli">
 		<div class="graphheadline">Voltage</div>
 		<div id="voltagegraph" class="graph"></div>
 		<span class="graphsettings">Show last <input type="text" class="graph_valnum"> values</input></span>
 	</li>
-	<li data-row="7" data-col="9" data-sizex="6" data-sizey="6" class="gli">
+	<li data-row="5" data-col="4" data-sizex="6" data-sizey="6" class="gli">
 		<div class="graphheadline">Current</div>
 		<div id="currentgraph" class="graph"></div>
 		<span class="graphsettings">Show last <input type="text" class="graph_valnum"> values</input></span>
 	</li>
 
+
 	<!-- Timed list -->
+<!--
 	<li data-row="1" data-col="15" data-sizex="8" data-sizey="5" class="gli">
 	<div id="timedlist_container">
 		<div class="dispheading">Timed list</div>
@@ -113,8 +115,10 @@
 		</div>
 	</div>
 	</li>
+-->
 
 	<!-- Export / Import -->
+<!--
 	<li data-row="6" data-col="15" data-sizex="8" data-sizey="2" class="gli">
 	<div id="eximport_container">
 		<div class="eximcategory"><h1>Timed List</h1>
@@ -131,15 +135,18 @@
 		</div>
 	</div>
 	</li>
-
-	<!-- Serial terminal -->
-	<li data-row="6" data-col="1" data-sizex="4" data-sizey="5" class="gli">
-	<div id="serlog_term">
-		<ul id="serial_log"></ul>
-		<input id="serial_msg" />
-		<button id="putserial">OK</button>
+-->
+	<!-- Current / power counter -->
+<!--
+	<li data-row="4" data-col="15" data-sizex="4" data-sizey="3" class="gli">
+	<div id="counter_container">
+		<div class="dispheading">Counter</div>
+		<span id="charge_disp" class="segment7">????</span>mAh<br/>
+		<span id="energy_disp" class="segment7">????</span>Wh
 	</div>
 	</li>
+-->
+
 </ul></div>
 
 </body>

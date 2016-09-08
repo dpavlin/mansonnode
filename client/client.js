@@ -1,5 +1,5 @@
 var UPDATE_TIME = 50;
-var GRAPH_VALNUM = 100; // show only so much on graph before scrolling (and throwing away data from browser)
+var GRAPH_VALNUM = 300; // show only so much on graph before scrolling (and throwing away data from browser)
 
 var socket = io();
 
@@ -263,8 +263,8 @@ function setup_ui() {
 
 
 	// Setting values
-	var volt_disp = $("#volt_disp");
-	var curr_disp = $("#curr_disp");
+	var volt_set = $("#volt_set");
+	var curr_set = $("#curr_set");
 
 	// Actual values
 	var volt_actual = $("#volt_actual");
@@ -312,22 +312,32 @@ function setup_ui() {
 	}
 
 	var update_properties = function() {
+
+		var update_if_changed = function(volt_set,volt) {
+			var volt_str = volt.toFixed(2).toString();
+
+			var last = volt_set.data('last');
+			if ( last && last == volt_str ) return 0;
+
+			volt_set.text(volt_str);
+
+			volt_set.data('last', volt_str);
+			console.log(volt_str,volt,volt_set);
+
+			return volt_str;
+		};
+
 		server_prop("get_volt", function(volt) {
-			var volt_str = volt.toFixed(1).toString();
-			while (volt_str.length < 4) volt_str = " " + volt_str;
-			volt_disp.text(volt_str);
+			update_if_changed(volt_set, volt);
 		});
 
 		server_prop("get_curr", function(curr) {
-			var curr_str = curr.toFixed(HCS_decplaces).toString();
-			while (curr_str.length < 4) curr_str = " " + curr_str;
-			curr_disp.text(curr_str);
+			update_if_changed(curr_set, curr);
 		});
 
 		server_prop("get_actual_volt", function(volt) {
-			var volt_str = volt.toFixed(2).toString();
-			while (volt_str.length < 5) volt_str = " " + volt_str;
-			volt_actual.text(volt_str);
+			update_if_changed(volt_actual, volt);
+
 			voltage_data.push([(Date.now() - date_begin) / 1000, volt]);
 
 			// Reset flot voltage graph
@@ -343,9 +353,8 @@ function setup_ui() {
 		});
 
 		server_prop("get_actual_curr", function(curr) {
-			var curr_str = curr.toFixed(2).toString();
-			while (curr_str.length < 5) curr_str = " " + curr_str;
-			curr_actual.text(curr_str);
+			update_if_changed(curr_actual, curr);
+
 			current_data.push([(Date.now() - date_begin) / 1000, curr]);
 
 			// Reset flot current graph
@@ -364,7 +373,9 @@ function setup_ui() {
 
 			// Convert from As to Ah via / 3600, from Ah to mAh (* 1000)
 			var charge_str = (counter_charge / 3600 * 1000).toFixed(2).toString();
+
 			while (charge_str.length < 6) charge_str = " " + charge_str;
+			//XXXupdate_if_changed(charge_disp, charge_str);
 			charge_disp.text(charge_str);
 
 			energy_counter.setCurrent(curr);
