@@ -1,4 +1,5 @@
 var UPDATE_TIME = 50;
+var GRAPH_VALNUM = 100; // show only so much on graph before scrolling (and throwing away data from browser)
 
 var socket = io();
 
@@ -330,8 +331,8 @@ function setup_ui() {
 			voltage_data.push([(Date.now() - date_begin) / 1000, volt]);
 
 			// Reset flot voltage graph
-			var valnum = $("#voltagegraph").data("valnum")
-			var data = (valnum > 0) ? [voltage_data.slice(voltage_data.length - valnum)] : [voltage_data];
+			var valnum = $("#voltagegraph").data("valnum");
+			var data = (voltage_data.length > valnum) ? [voltage_data.slice(voltage_data.length - valnum)] : [voltage_data];
 
 			var voltagegraph = $.plot($("#voltagegraph"), data);
 
@@ -344,12 +345,12 @@ function setup_ui() {
 		server_prop("get_actual_curr", function(curr) {
 			var curr_str = curr.toFixed(2).toString();
 			while (curr_str.length < 5) curr_str = " " + curr_str;
-			curr_actual.setValue(curr_str);
+			curr_actual.text(curr_str);
 			current_data.push([(Date.now() - date_begin) / 1000, curr]);
 
 			// Reset flot current graph
-			var valnum = $("#currentgraph").data("valnum")
-			var data = (valnum > 0) ? [current_data.slice(current_data.length - valnum)] : [current_data];
+			var valnum = $("#currentgraph").data("valnum");
+			var data = (current_data.length > valnum) ? [current_data.slice(current_data.length - valnum)] : [current_data];
 
 			var currentgraph = $.plot($("#currentgraph"), data, { colors: ['#07f'] });
 
@@ -419,7 +420,8 @@ function putserial() {
 	$("#serial_msg").val("");
 }
 
-$(function() {
+$(document).ready(function() {
+	console.log('ready');
 	// Initialize gridster for the grid layout
 	gridster_init();
 
@@ -430,10 +432,13 @@ $(function() {
 	});
 
 	// Set number of values in graph
-	$(".graph_valnum").keypress(function(e) {
+	$(".graph_valnum").val(GRAPH_VALNUM).keypress(function(e) {
 		if (e.which == 13)
 			$(this).parent().parent().find(".graph").data("valnum",
 				parseInt($(this).val()));
+	}).each(function(e) {
+		// XXX this will set maxwidth of graph on load
+		$(this).parent().parent().find(".graph").data("valnum", GRAPH_VALNUM);
 	});
 
 	/* --- Timed list --- */
@@ -456,12 +461,12 @@ $(function() {
 	});
 
 	// Voltage slider
-	$("#voltage_control").on("input", function() {
+	$("#voltage_control").val(5).on("input", function() {
 		setControlVoltage(parseFloat($("#voltage_control").val()));
 	});
 
 	// Current slider
-	$("#current_control").on("input", function() {
+	$("#current_control").val(1).on("input", function() {
 		setControlCurrent(parseFloat($("#current_control").val()));
 	});
 
