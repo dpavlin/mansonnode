@@ -420,12 +420,19 @@ body {
 */
 }
 
+/* CC/CV box */
 #cvcc_disp[status="cv"] {
 	border-color:#0f0;
 }
-
 #cvcc_disp[status="cc"] {
 	border-color:#f00;
+}
+/* CC/CV colors for 7-digit */
+#volt_actual[status="cv"] {
+	color:#fc0;
+}
+#curr_actual[status="cc"] {
+	color:#66f;
 }
 
 /* Voltage / current / power graph */

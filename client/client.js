@@ -313,18 +313,18 @@ function setup_ui() {
 
 	var update_properties = function() {
 
-		var update_if_changed = function(volt_set,volt) {
-			var volt_str = volt.toFixed(2).toString();
+		var update_if_changed = function(element_set,value) {
+			var value_str = typeof(value) === "number" ? value.toFixed(2).toString() : value;
 
-			var last = volt_set.data('last');
-			if ( last && last == volt_str ) return 0;
+			var last = element_set.data('last');
+			if ( last && last == value_str ) return 0;
 
-			volt_set.text(volt_str);
+			element_set.text(value_str);
 
-			volt_set.data('last', volt_str);
-			console.log(volt_str,volt,volt_set);
+			element_set.data('last', value_str);
+			//console.log(value_str,value,element_set);
 
-			return volt_str;
+			return value_str;
 		};
 
 		server_prop("get_volt", function(volt) {
@@ -390,8 +390,12 @@ function setup_ui() {
 		});
 
 		server_prop("get_cvcc", function(cvcc) {
-			$("#cvcc_disp").attr("status", cvcc);
-			$("#cvcc_disp").html(cvcc == "cv" ? "CV" : "CC");
+			var el = $("#cvcc_disp").attr("status", cvcc);
+			if ( update_if_changed(el, cvcc == "cv" ? "CV" : "CC") ) {
+				volt_actual.attr("status", cvcc);
+				curr_actual.attr("status", cvcc);
+					
+			}
 		});
 	}
 
