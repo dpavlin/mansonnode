@@ -499,4 +499,5 @@ $(document).ready(function() {
 	});
 
 	setup_ui();
+	socket.emit("hcs", "MODEL");
 });
