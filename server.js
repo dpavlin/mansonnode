@@ -216,10 +216,10 @@ register_callback("hcs", function(msg, fn) {
 		// Interpret command results
 		// Only speeds up updating of the GUI, so remove this if you really need to make
 		// sure the PSU actually received the command.
+/*
 		var c = command.deserialize(msg);
 		var property_change = true;
 
-/*
 		if (c.command == "SOUT")
 			HCS_properties.enable_out = (c.parameters[0] == "0");
 		else if (c.command == "VOLT")
@@ -227,10 +227,10 @@ register_callback("hcs", function(msg, fn) {
 		else if (c.command == "CURR")
 			HCS_properties.curr = c.parameters[0];
 		else
-*/
 			property_change = false;
 
 		if (property_change) io.emit("propchange");
+*/
 		/********************************************************************************/
 
 
