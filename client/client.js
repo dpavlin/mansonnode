@@ -379,8 +379,8 @@ function setup_ui() {
 			var charge_str = (counter_charge / 3600 * 1000).toFixed(2).toString();
 
 			while (charge_str.length < 6) charge_str = " " + charge_str;
-			//XXXupdate_if_changed(charge_disp, charge_str);
-			charge_disp.text(charge_str);
+			update_if_changed(charge_disp, charge_str);
+			//charge_disp.text(charge_str);
 
 			energy_counter.setCurrent(curr);
 		});
