@@ -116,10 +116,10 @@ body {
 	-ms-user-select: none;
 	user-select: none;
 	z-index:-1;
-	font-size:50px;
+	font-size:35px;
 	position:absolute;
-	top:calc(25px);
-	left:calc(50% - 50px);
+	top:calc(15px);
+	left:calc(50% - 40px);
 	color:#f44;
 }
 
@@ -483,10 +483,15 @@ body {
 	cursor:pointer;
 }
 
+@font-face {
+  font-family: "D7";
+  src: url("DSEG_v030/DSEG7/Classic/DSEG7Classic-BoldItalic.ttf") format('woff');
+  //src: url("DSEG_v030/DSEG7/Modern/DSEG7Modern-Bold.woff") format('woff');
+}
 .segment7 {
-	font-family: 'Segment7Standard'; 
-	font-weight: normal; 
-	font-style: italic;
+	font-family: "D7";
+	//font-weight: normal; 
+	//font-style: italic;
 	color: #0f0;
-	font-size: 250%;
+	font-size: 33px;
 }
