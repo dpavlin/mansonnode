@@ -4,7 +4,7 @@ var SERIAL_PORT = process.argv[2];
 SERIAL_PORT = '/dev/serial/by-path/platform-3f980000.usb-usb-0\:1.5.1\:1.0-port0';
 var SERIAL_BAUD = 38400;
 var DECIMAL_PLACES = 1; // FIXME nothing other than 1 doesn't work with toFixed(1).toString
-var UPDATE_TIME = 200; // in ms
+var UPDATE_TIME = 333; // in ms
 // ###################################
 
 if (!SERIAL_PORT) {
@@ -23,6 +23,21 @@ var io = require("socket.io")(http);
 var path = require("path");
 var HCS = require("./hcs.js");
 var command = require("./common/commands.js");
+var mqtt = require('mqtt')
+var client  = mqtt.connect('mqtt://rpi2');
+
+client.on('connect', function () {
+  client.subscribe('b3603/cmd')
+  client.publish('b3603/stat', 'started')
+})
+ 
+/*
+client.on('message', function (topic, message) {
+  // message is Buffer 
+  console.log(message.toString())
+  //client.end()
+}
+*/
 
 // Store number of decimal places in serialization / deserialization modules
 command.set_decplaces(DECIMAL_PLACES);
@@ -34,33 +49,26 @@ var client_ui_state = {};
 // Initialize HCS and get some factory-setting properties (max. voltage / current)
 var HCS_properties = Object();
 HCS.open(SERIAL_PORT, SERIAL_BAUD, function() {
-/*
 	var noanswer_timeout = setTimeout(function() {
 		console.log("HCS didn't answer. Make sure it is powered on.");
 		console.log("Also, check if you selected the correct serial port.");
 		console.log("Exiting...");
 		process.exit(1);
-	}, 1000);
+	}, 3000);
 
-	HCS.command("ECHO 0", function() {
+	HCS.command("CONFIG", function(answer) {
 		clearTimeout(noanswer_timeout);
-		HCS.command("CONFIG", function(answer) {
-			console.log("# answer = %j", answer);
-			HCS_properties.maxvolt = parseInt(answer[0].substring(0, 3)) / 10;
-			HCS_properties.maxcurr = parseInt(answer[0].substring(3, 6)) /
-				Math.pow(10, DECIMAL_PLACES);
+		console.log("# answer = %j", answer);
 
-			console.log("------------------------");
-			console.log("Maximum voltage: " + HCS_properties.maxvolt.toFixed(2) + " V");
-			console.log("Maximum current: " + HCS_properties.maxcurr.toFixed(2) + " A");
-			console.log("------------------------");
-		});
+		HCS_properties.volt = parseFloat(answer['VSET']);
+		HCS_properties.curr = parseFloat(answer['CSET']);
+		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
+
+		HCS_properties.maxvolt = 36.0;
+		HCS_properties.maxcurr = 3.0;
+		console.log("# HCS_properties = %j", HCS_properties);
+
 	});
-*/
-			console.log("# HCS_properties = %j", HCS_properties);
-			HCS_properties.maxvolt = 36.0;
-			HCS_properties.maxcurr = 3.0;
-			console.log("# HCS_properties = %j", HCS_properties);
 });
 
 // Update HCS properties regularly
@@ -68,6 +76,8 @@ setInterval(function() {
 	if (!HCS.ready) return;
 	HCS.command("STATUS", function(answer) {
 		//console.log("# STATUS answer = %j", answer);
+
+		if (!answer['COUT']) return;
 
 		HCS_properties.maxvolt =	parseFloat(answer['VIN']);
 		HCS_properties.actual_volt =	parseFloat(answer['VOUT']);
@@ -77,7 +87,12 @@ setInterval(function() {
 		HCS_properties.enable_out = answer["OUTPUT"] == "OFF" ? 0 : 1;
 
 		//console.log("# HCS_properties = %j", HCS_properties);
+		console.log(HCS_properties.actual_volt, HCS_properties.actual_curr);
+  		client.publish('fade/b3603/V', HCS_properties.actual_volt.toString())
+  		client.publish('fade/b3603/A', HCS_properties.actual_curr.toString())
 	});
+
+	if ( HCS_properties.volt == null ) {
 
 	HCS.command("CONFIG", function(answer) {
 		HCS_properties.volt = parseFloat(answer['VSET']);
@@ -86,12 +101,8 @@ setInterval(function() {
 		//console.log("# HCS_properties = %j", HCS_properties);
 	});
 
-/*
-	// "GOUT" command reads state of SOUT, even though it is not documented
-	HCS.command("GOUT", function(answer) {
-		HCS_properties.enable_out = (answer[0].substring(0, 1) == "0");
-	});
-*/
+	} // don't call CONFIG
+
 	// Inform clients that properties have been updated
 	io.emit("propchange");
 }, UPDATE_TIME);
@@ -233,7 +244,7 @@ register_callback("hcs", function(msg, fn) {
 */
 		/********************************************************************************/
 
-
+		console.log('# hcs', msg, answer);
 		// Broadcast command
 		io.emit("hcs", msg);
 		io.emit("hcs_answer", answer);
