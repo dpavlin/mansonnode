@@ -17,6 +17,7 @@ exports.open = function(port, baud, callback) {
 
 	// Manson HCS is ready to accept new commands (has answered with "OK")
 	var HCS_ready = true;
+	var HCS_last_cmd = '';
 
 	// Store commands in a queue if HCS is not ready
 	var HCS_queue = Array();
@@ -60,17 +61,23 @@ exports.open = function(port, baud, callback) {
 		});
 
 		function command(cmd, callback) {
-			if (!HCS_ready)
-				HCS_queue.push({
-					cmd: cmd,
-					callback: callback
-				});
-			else {
+			if (!HCS_ready) {
+				if ( HCS_last_cmd == cmd ) {
+					console.log('ignore queue for',cmd);
+				} else {
+					HCS_queue.push({
+						cmd: cmd,
+						callback: callback
+					});
+					console.log('HCS_queue = %j', HCS_queue);
+				}
+			} else {
 				HCS_ready = false;
+				HCS_last_cmd = cmd;
 				cmd += "\r";
 				cmd = cmd.replace("\r\r","\r");
 				serport.write(cmd);
-				//console.log(">> %j",cmd);
+				console.log(">> %j",cmd);
 				HCS_callback = callback;
 			}
 		}
