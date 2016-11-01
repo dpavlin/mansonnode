@@ -31,13 +31,16 @@ client.on('connect', function () {
   client.publish('b3603/stat', 'started')
 })
  
-/*
 client.on('message', function (topic, message) {
-  // message is Buffer 
-  console.log(message.toString())
-  //client.end()
-}
-*/
+	// message is Buffer 
+	var m = message.toString();
+	console.log("MQTT %j",m);
+	HCS.command(m, function(answer) {
+		console.log("MQTT %j",answer);
+  		client.publish('b3603/stat', answer._lines.join("\n"))
+	});
+	//client.end()
+});
 
 // Store number of decimal places in serialization / deserialization modules
 command.set_decplaces(DECIMAL_PLACES);
